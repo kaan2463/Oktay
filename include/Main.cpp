@@ -21,8 +21,9 @@ int main()
     A.print();
     (+A).print();
 
+
+    B = A;
     B = (+A);
-    //B = A;
     B.print();
     return 0;
 }

@@ -27,6 +27,11 @@ public:
 
     ~Matrix()
     {
+
+    }
+
+    void free()
+    {
         delete[] data;
     }
 
@@ -75,6 +80,7 @@ public:
     }
     ~Matrix2d()
     {
+        free();
     }
 
     void Dim2d(size_t m, size_t n)
@@ -89,8 +95,9 @@ public:
     Matrix2d operator*(Matrix2d A);
     Matrix2d operator+(Matrix2d A);
     Matrix2d operator-(Matrix2d A);
-    Matrix2d& operator=(Matrix2d A);
+    // Matrix2d& operator=(Matrix2d A);
     Matrix2d& operator=(Matrix2d& A);
+    Matrix2d& operator=(const Matrix2d& A);
     Matrix2d operator+();
 };
 #endif

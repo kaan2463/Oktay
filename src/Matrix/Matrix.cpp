@@ -34,19 +34,27 @@ Matrix2d Matrix2d::operator-(Matrix2d A)
     return C;
 }
 
-Matrix2d& Matrix2d::operator=(Matrix2d A)
-{
-    m = A.m;
-    n = A.n;
-    MatrixOperations::getInstance()->dcpy(Data(), A.Data(), A.m, A.n);
-    return *this;
-}
+//Matrix2d& Matrix2d::operator=(Matrix2d A)
+//{
+//    m = A.m;
+//    n = A.n;
+//    MatrixOperations::getInstance()->dcpy(Data(), A.Data(), A.m, A.n);
+//    return *this;
+//}
 //TODO: ALL type of assignment operator will be implemented
 Matrix2d& Matrix2d::operator=(Matrix2d& A)
 {
     m = A.m;
     n = A.n;
     MatrixOperations::getInstance()->dcpy(Data(), A.Data(), A.m, A.n);
+    return *this;
+}
+
+Matrix2d& Matrix2d::operator=(const Matrix2d& A)
+{
+    m = A.m;
+    n = A.n;
+    MatrixOperations::getInstance()->dcpy(Data(), ((Matrix)A).Data(), A.m, A.n);
     return *this;
 }
 
