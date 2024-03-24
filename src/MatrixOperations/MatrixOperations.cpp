@@ -54,26 +54,84 @@ void MatrixOperations::dmul(double* A, double* B, double* C, size_t m, size_t n,
     }
 }
 
-// TODO kaan: Implement In-Place transpose algorithm! 
+void MatrixOperations::dsub(double* A, double* B, double* C, size_t m, size_t n)
+{
+    size_t mn;
+    for(size_t mi = 0; mi < m; mi++)
+    {
+        for(size_t ni = 0; ni < n; ni++)
+        {
+            mn = mi * n + ni;
+
+            C[mn] = A[mn] - B[mn];
+        }
+    }
+}
+
+void MatrixOperations::dadd(double* A, double* B, double* C, size_t m, size_t n)
+{
+    size_t mn;
+    for(size_t mi = 0; mi < m; mi++)
+    {
+        for(size_t ni = 0; ni < n; ni++)
+        {
+            mn = mi * n + ni;
+
+            C[mn] = A[mn] + B[mn];
+        }
+    }
+}
+
+void MatrixOperations::dcpy(double* A, double* B, size_t m, size_t n)
+{
+    //memcpy(A, B, m * n * sizeof(double));
+
+    size_t mn;
+    for(size_t mi = 0; mi < m; mi++)
+    {
+        for(size_t ni = 0; ni < n; ni++)
+        {
+            mn = mi * n + ni;
+
+            A[mn] = B[mn];
+        }
+    }
+}
+
+
+//Helper swap
+inline void swap(double* a, double* b)
+{
+    double xa = *a;
+    *a = *b;
+    *b = xa;
+
+}
+
+//Helper rotate
+inline void rotate(double* first, double* middle, double* last)
+{
+    double* next = middle;
+    while(first != next)
+    {
+        swap(first++, next++);
+        if(next == last) next = middle;
+        else if(first == middle) middle = next;
+    }
+}
+
 void MatrixOperations::transpose2d(double* A, size_t m, size_t n)
 {
+    while(m > 1 && n > 1)
+    {
+        for(size_t i = 1; i < m; i++)
+        {
+            std::rotate(A + i, A + i * n, A + i * n + 1);
+        }
 
-    // size_t mn = 0;
-    // size_t nm = 0;
-    // double value;
-    // 
-    // for(size_t mi = 0; mi < m; mi++)
-    // {
-    //     for(size_t ni = 0; ni < mi + 1; ni++)
-    //     {
-    //         mn = mi * n + ni;
-    //         nm = ni * m + mi;
-    //         value = A[mn];
-    //         A[mn] = A[nm];
-    //         A[nm] = value;
-    //     }
-    // }
-
+        A += m;
+        n -= 1;
+    }
 }
 
 

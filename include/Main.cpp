@@ -1,3 +1,4 @@
+#include <Matrix.h>
 #include <MatrixOperations.h>
 
 #include <iostream>
@@ -7,22 +8,21 @@ using namespace std;
 
 int main()
 {
-    int M = 3;
-    int N = 6;
+    int M = 7;
+    int N = 4;
 
-    double* A = new double[M * N];
-    double* B = new double[M * N];
+    Matrix2d A(M, N);
+    Matrix2d B(M, N);
 
     for(int i = 0; i < M * N; i++)
     {
-        A[i] = (double)i;
+        A.Data()[i] = (double)i;
     }
+    A.print();
+    (+A).print();
 
-    MatrixOperations::getInstance()->print2d(A, M, N);
-
-    MatrixOperations::getInstance()->transpose2d(A, M, M);
-
-    MatrixOperations::getInstance()->print2d(A, N, M);
-
+    B = (+A);
+    //B = A;
+    B.print();
     return 0;
 }
