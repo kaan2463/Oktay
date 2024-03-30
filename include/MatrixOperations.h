@@ -52,6 +52,27 @@ public:
     void transpose2d(double* A, size_t m, size_t n);
 
     /*
+    * LU decomposition of matrix A
+    * Doolittle algorithm
+    * L : letf triangular matrix
+    * U : upper triangular matrix
+    * A = LU
+    */
+    void LUDecomposition2d(double* A, double* L, double* U, size_t m);
+
+    /*
+    * Determinant of square matrix A
+    * return det(A)
+    */
+    double det2d(double* A, size_t m);
+
+    /*
+    * Inverse of Matrix
+    * C_{ij} = A^{-1}_{ij}
+    */
+    void inverse(double* A, double* C, size_t m);
+
+    /*
     * Helper function for print Matrix
     */
     void print2d(double* A, size_t m, size_t n);

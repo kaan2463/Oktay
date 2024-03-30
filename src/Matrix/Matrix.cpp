@@ -13,35 +13,27 @@ void Matrix2d::print()
     MatrixOperations::getInstance()->print2d(Data(), m, n);
 }
 
-Matrix2d Matrix2d::operator*(Matrix2d A)
+Matrix2d Matrix2d::operator*(Matrix2d& A)
 {
     Matrix2d C(this->m, A.n);
-    MatrixOperations::getInstance()->dmul(Data(), A.Data(), C.Data(), this->m, A.m, A.n);
+    MatrixOperations::getInstance()->dmul(Data(), A.Data(), C.Data(), this->m, A.n, A.m);
     return C;
 }
 
-Matrix2d Matrix2d::operator+(Matrix2d A)
-{
-    Matrix2d C(A.m, A.n);
-    MatrixOperations::getInstance()->dsub(Data(), A.Data(), C.Data(), A.m, A.n);
-    return C;
-}
-
-Matrix2d Matrix2d::operator-(Matrix2d A)
+Matrix2d Matrix2d::operator+(Matrix2d& A)
 {
     Matrix2d C(A.m, A.n);
     MatrixOperations::getInstance()->dadd(Data(), A.Data(), C.Data(), A.m, A.n);
     return C;
 }
 
-//Matrix2d& Matrix2d::operator=(Matrix2d A)
-//{
-//    m = A.m;
-//    n = A.n;
-//    MatrixOperations::getInstance()->dcpy(Data(), A.Data(), A.m, A.n);
-//    return *this;
-//}
-//TODO: ALL type of assignment operator will be implemented
+Matrix2d Matrix2d::operator-(Matrix2d& A)
+{
+    Matrix2d C(A.m, A.n);
+    MatrixOperations::getInstance()->dsub(Data(), A.Data(), C.Data(), A.m, A.n);
+    return C;
+}
+
 Matrix2d& Matrix2d::operator=(Matrix2d& A)
 {
     m = A.m;

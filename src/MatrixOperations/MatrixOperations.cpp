@@ -12,8 +12,6 @@ MatrixOperations* MatrixOperations::getInstance()
     return INSTANCE;
 }
 
-
-
 void MatrixOperations::axpy(double alpha, double* A, double beta, double* C, size_t m)
 {
     for(size_t i = 0; i < m; i++)
@@ -33,9 +31,9 @@ void MatrixOperations::dhad(double* A, double* B, double* C, size_t m)
 void MatrixOperations::dmul(double* A, double* B, double* C, size_t m, size_t n, size_t k)
 {
     double value;
-    size_t mk = 0;
-    size_t km = 0;
-    size_t mn = 0;
+    size_t mk;
+    size_t kn;
+    size_t mn;
     for(size_t mi = 0; mi < m; mi++)
     {
         for(size_t ni = 0; ni < n; ni++)
@@ -44,10 +42,10 @@ void MatrixOperations::dmul(double* A, double* B, double* C, size_t m, size_t n,
             value = 0;
             for(size_t ki = 0; ki < k; ki++)
             {
-                km = ki * m + mi;
+                kn = ki * m + ni;
                 mk = mi * k + ki;
 
-                value += A[mk] * B[km];
+                value += A[mk] * B[kn];
             }
             C[mn] = value;
         }
@@ -132,6 +130,75 @@ void MatrixOperations::transpose2d(double* A, size_t m, size_t n)
         A += m;
         n -= 1;
     }
+}
+
+void MatrixOperations::LUDecomposition2d(double* A, double* L, double* U, size_t M)
+{
+    size_t ik, ii, kj, km, mj, kk, im, mk;
+
+    memset(L, 0, sizeof(double) * M * M);
+    memset(U, 0, sizeof(double) * M * M);
+
+    for(size_t i = 0; i < M; ++i)
+    {
+        ii = i * M + i;
+        U[i] = A[i];
+        L[ii] = 1.0;
+        L[i * M] = A[i * M] / U[0];
+    }
+    for(size_t k = 1; k < M; ++k)
+    {
+        kk = k * M + k;
+        for(size_t j = k; j < M; ++j)
+        {
+            kj = k * M + j;
+            U[kj] = A[kj];
+            for(size_t m = 0; m < k; ++m)
+            {
+                km = k * M + m;
+                mj = m * M + j;
+                U[kj] -= L[km] * U[mj];
+            }
+        }
+        for(size_t i = k + 1; i < M; ++i)
+        {
+            ik = i * M + k;
+            L[ik] = A[ik];
+            for(size_t m = 0; m < k; ++m)
+            {
+                im = i * M + m;
+                mk = m * M + k;
+                L[ik] -= L[im] * U[mk];
+            }
+            L[ik] /= U[kk];
+        }
+    }
+}
+
+double MatrixOperations::det2d(double* A, size_t m)
+{
+    double* L = new double[m * m];
+    double* U = new double[m * m];
+
+    LUDecomposition2d(A, L, U, m);
+
+    double det = 1.0;
+    size_t ii;
+    for(size_t mi = 0; mi < m; mi++)
+    {
+        ii = mi * m + mi;
+        det *= L[ii] * U[ii];
+    }
+
+    delete[] L;
+    delete[] U;
+
+    return det;
+}
+
+void MatrixOperations::inverse(double* A, double* B, size_t m)
+{
+    // TODO kaan: implement
 }
 
 

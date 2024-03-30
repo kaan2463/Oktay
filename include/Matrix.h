@@ -27,7 +27,6 @@ public:
 
     ~Matrix()
     {
-
     }
 
     void free()
@@ -92,9 +91,9 @@ public:
     void print();
 
     // operators
-    Matrix2d operator*(Matrix2d A);
-    Matrix2d operator+(Matrix2d A);
-    Matrix2d operator-(Matrix2d A);
+    Matrix2d operator*(Matrix2d& A);
+    Matrix2d operator+(Matrix2d& A);
+    Matrix2d operator-(Matrix2d& A);
     // Matrix2d& operator=(Matrix2d A);
     Matrix2d& operator=(Matrix2d& A);
     Matrix2d& operator=(const Matrix2d& A);
