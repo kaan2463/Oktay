@@ -135,6 +135,7 @@
     <ClCompile Include="..\..\src\Matrix\Matrix.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\Exception.h" />
     <ClInclude Include="..\..\include\Matrix.h" />
     <ClInclude Include="..\..\include\MatrixOperations.h" />
   </ItemGroup>

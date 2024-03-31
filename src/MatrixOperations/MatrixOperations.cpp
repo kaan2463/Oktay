@@ -1,5 +1,8 @@
+#include "Exception.h"
 #include "MatrixOperations.h"
 #include <iostream>
+
+#define DE 1.0e-8
 
 MatrixOperations* MatrixOperations::INSTANCE = 0;
 
@@ -12,38 +15,38 @@ MatrixOperations* MatrixOperations::getInstance()
     return INSTANCE;
 }
 
-void MatrixOperations::axpy(double alpha, double* A, double beta, double* C, size_t m)
+void MatrixOperations::axpy(double alpha, double* A, double beta, double* C, size_t M)
 {
-    for(size_t i = 0; i < m; i++)
+    for(size_t i = 0; i < M; i++)
     {
         C[i] = alpha * A[i] + beta * C[i];
     }
 }
 
-void MatrixOperations::dhad(double* A, double* B, double* C, size_t m)
+void MatrixOperations::dhad(double* A, double* B, double* C, size_t M)
 {
-    for(size_t i = 0; i < m; i++)
+    for(size_t i = 0; i < M; i++)
     {
         C[i] = A[i] * B[i];
     }
 }
 
-void MatrixOperations::dmul(double* A, double* B, double* C, size_t m, size_t n, size_t k)
+void MatrixOperations::dmul(double* A, double* B, double* C, size_t M, size_t N, size_t K)
 {
     double value;
     size_t mk;
     size_t kn;
     size_t mn;
-    for(size_t mi = 0; mi < m; mi++)
+    for(size_t mi = 0; mi < M; mi++)
     {
-        for(size_t ni = 0; ni < n; ni++)
+        for(size_t ni = 0; ni < N; ni++)
         {
-            mn = mi * n + ni;
+            mn = mi * N + ni;
             value = 0;
-            for(size_t ki = 0; ki < k; ki++)
+            for(size_t ki = 0; ki < K; ki++)
             {
-                kn = ki * m + ni;
-                mk = mi * k + ki;
+                kn = ki * M + ni;
+                mk = mi * K + ki;
 
                 value += A[mk] * B[kn];
             }
@@ -52,44 +55,42 @@ void MatrixOperations::dmul(double* A, double* B, double* C, size_t m, size_t n,
     }
 }
 
-void MatrixOperations::dsub(double* A, double* B, double* C, size_t m, size_t n)
+void MatrixOperations::dsub(double* A, double* B, double* C, size_t M, size_t N)
 {
     size_t mn;
-    for(size_t mi = 0; mi < m; mi++)
+    for(size_t mi = 0; mi < M; mi++)
     {
-        for(size_t ni = 0; ni < n; ni++)
+        for(size_t ni = 0; ni < N; ni++)
         {
-            mn = mi * n + ni;
+            mn = mi * N + ni;
 
             C[mn] = A[mn] - B[mn];
         }
     }
 }
 
-void MatrixOperations::dadd(double* A, double* B, double* C, size_t m, size_t n)
+void MatrixOperations::dadd(double* A, double* B, double* C, size_t M, size_t N)
 {
     size_t mn;
-    for(size_t mi = 0; mi < m; mi++)
+    for(size_t mi = 0; mi < M; mi++)
     {
-        for(size_t ni = 0; ni < n; ni++)
+        for(size_t ni = 0; ni < N; ni++)
         {
-            mn = mi * n + ni;
+            mn = mi * N + ni;
 
             C[mn] = A[mn] + B[mn];
         }
     }
 }
 
-void MatrixOperations::dcpy(double* A, double* B, size_t m, size_t n)
+void MatrixOperations::dcpy(double* A, double* B, size_t M, size_t N)
 {
-    //memcpy(A, B, m * n * sizeof(double));
-
     size_t mn;
-    for(size_t mi = 0; mi < m; mi++)
+    for(size_t mi = 0; mi < M; mi++)
     {
-        for(size_t ni = 0; ni < n; ni++)
+        for(size_t ni = 0; ni < N; ni++)
         {
-            mn = mi * n + ni;
+            mn = mi * N + ni;
 
             A[mn] = B[mn];
         }
@@ -118,17 +119,17 @@ inline void rotate(double* first, double* middle, double* last)
     }
 }
 
-void MatrixOperations::transpose2d(double* A, size_t m, size_t n)
+void MatrixOperations::transpose2d(double* A, size_t M, size_t N)
 {
-    while(m > 1 && n > 1)
+    while(M > 1 && N > 1)
     {
-        for(size_t i = 1; i < m; i++)
+        for(size_t i = 1; i < M; i++)
         {
-            std::rotate(A + i, A + i * n, A + i * n + 1);
+            std::rotate(A + i, A + i * N, A + i * N + 1);
         }
 
-        A += m;
-        n -= 1;
+        A += M;
+        N -= 1;
     }
 }
 
@@ -175,18 +176,18 @@ void MatrixOperations::LUDecomposition2d(double* A, double* L, double* U, size_t
     }
 }
 
-double MatrixOperations::det2d(double* A, size_t m)
+double MatrixOperations::det2d(double* A, size_t M)
 {
-    double* L = new double[m * m];
-    double* U = new double[m * m];
+    double* L = new double[M * M];
+    double* U = new double[M * M];
 
-    LUDecomposition2d(A, L, U, m);
+    LUDecomposition2d(A, L, U, M);
 
     double det = 1.0;
     size_t ii;
-    for(size_t mi = 0; mi < m; mi++)
+    for(size_t mi = 0; mi < M; mi++)
     {
-        ii = mi * m + mi;
+        ii = mi * M + mi;
         det *= L[ii] * U[ii];
     }
 
@@ -196,19 +197,115 @@ double MatrixOperations::det2d(double* A, size_t m)
     return det;
 }
 
-void MatrixOperations::inverse(double* A, double* B, size_t m)
+//inline double abs(double x)
+//{
+//    // breaks strict aliasing, but compiler writer knows this behavior for the platform
+//    uint64_t i = reinterpret_cast<const std::uint64_t&>(x);
+//    i &= 0x7FFFFFFFFFFFFFFFULL; // clear sign bit
+//
+//    return reinterpret_cast<const double&>(i);
+//}
+
+void MatrixOperations::inverse(double* A, double* B, size_t M)
 {
-    // TODO kaan: implement
+    memset(B, 0, sizeof(double) * M * M);
+
+    size_t ii, ij, jj, jk, ji, ik;
+    double ci, cj;
+
+    double* L = new double[M * M];
+
+    memcpy(L, A, sizeof(double) * M * M);
+
+    for(size_t i = 0; i < M; i++)
+    {
+        ii = i * M + i;
+        B[ii] = 1.0;
+    }
+
+    for(size_t i = 0; i < M; i++)
+    {
+        MatrixOperations::print2d(L, M, M);
+        MatrixOperations::print2d(B, M, M);
+        ii = i * M + i;
+
+        if(abs(L[ii]) < DE) // or equal 0.0 
+        {
+            for(size_t j = i + 1; j < M; j++)
+            {
+                ji = j * M + i;
+                if(L[ji] > DE)
+                {
+                    for(size_t k = 0; k < M; k++)
+                    {
+                        ik = i * M + k;
+                        jk = j * M + k;
+                        swap(&L[ik], &L[jk]);
+                        swap(&B[ik], &B[jk]);
+                    }
+                    break;
+                }
+            }
+        }
+
+        if(abs(L[ii]) < DE)
+        {
+            THROW_EXCEPTION("Singular Matrix\n");
+            return;
+        }
+
+        ci = 1.0 / L[ii];
+        for(size_t j = 0; j < M; j++)
+        {
+            ij = i * M + j;
+            L[ij] = L[ij] * ci;
+            B[ij] = B[ij] * ci;
+        }
+        MatrixOperations::print2d(L, M, M);
+        MatrixOperations::print2d(B, M, M);
+
+        for(size_t j = i + 1; j < M; j++)
+        {
+            ji = j * M + i;
+
+            cj = L[ji];
+            for(size_t k = 0; k < M; k++)
+            {
+                ik = i * M + k;
+                jk = j * M + k;
+                L[jk] -= L[ik] * cj;
+                B[jk] -= B[ik] * cj;
+            }
+        }
+    }
+
+    for(size_t i = M - 1; i > 0; i--)
+    {
+
+        for(size_t j = 0; j < i; j++)
+        {
+            ji = (i - 1 - j) * M + i;
+            cj = L[ji];
+            for(size_t k = 0; k < M; k++)
+            {
+                ik = i * M + k;
+                jk = (i - 1 - j) * M + k;
+                L[jk] -= cj * L[ik];
+                B[jk] -= cj * B[ik];
+            }
+        }
+    }
+
 }
 
 
-void MatrixOperations::print2d(double* A, size_t m, size_t n)
+void MatrixOperations::print2d(double* A, size_t M, size_t N)
 {
-    for(size_t mi = 0; mi < m; mi++)
+    for(size_t mi = 0; mi < M; mi++)
     {
-        for(size_t ni = 0; ni < n; ni++)
+        for(size_t ni = 0; ni < N; ni++)
         {
-            printf("%lf ", A[mi * n + ni]);
+            printf("%lf ", A[mi * N + ni]);
         }
         printf("\n");
     }
