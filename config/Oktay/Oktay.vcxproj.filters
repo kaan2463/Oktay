@@ -19,6 +19,9 @@
     <Filter Include="Source Files\src\Matrix">
       <UniqueIdentifier>{7d174971-44e5-471e-a66d-93d9aa420dff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\Math">
+      <UniqueIdentifier>{ce2acb58-3c84-4a37-9ee6-359fdcb17524}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Matrix\Matrix.cpp">
@@ -27,8 +30,11 @@
     <ClCompile Include="..\..\src\MatrixOperations\MatrixOperations.cpp">
       <Filter>Source Files\src\Matrix</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\include\Main.cpp">
-      <Filter>Source Files\src\Matrix</Filter>
+    <ClCompile Include="..\..\src\Math\MathematicalOperations.cpp">
+      <Filter>Source Files\src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Main.cpp">
+      <Filter>Source Files\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\Exception.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\MathematicalOperations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

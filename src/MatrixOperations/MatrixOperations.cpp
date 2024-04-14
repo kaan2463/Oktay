@@ -225,8 +225,6 @@ void MatrixOperations::inverse(double* A, double* B, size_t M)
 
     for(size_t i = 0; i < M; i++)
     {
-        MatrixOperations::print2d(L, M, M);
-        MatrixOperations::print2d(B, M, M);
         ii = i * M + i;
 
         if(abs(L[ii]) < DE) // or equal 0.0 
@@ -261,8 +259,6 @@ void MatrixOperations::inverse(double* A, double* B, size_t M)
             L[ij] = L[ij] * ci;
             B[ij] = B[ij] * ci;
         }
-        MatrixOperations::print2d(L, M, M);
-        MatrixOperations::print2d(B, M, M);
 
         for(size_t j = i + 1; j < M; j++)
         {
