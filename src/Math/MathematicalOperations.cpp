@@ -1,3 +1,4 @@
+#include <Exception.h>
 #include <MathematicalOperations.h>
 
 typedef unsigned long long uint64_t;
@@ -13,17 +14,16 @@ MathematicalOperations* MathematicalOperations::getInstance()
     return INSTANCE;
 }
 
-inline double abs(double x)
-{
-    // breaks strict aliasing, but compiler writer knows this behavior for the platform
-    uint64_t i = reinterpret_cast<const uint64_t&>(x);
-    i &= 0x7FFFFFFFFFFFFFFFULL; // clear sign bit
+//inline double abs(double x)
+//{
+//    uint64_t i = reinterpret_cast<const uint64_t&>(x);
+//    i &= 0x7FFFFFFFFFFFFFFFULL; // clear sign bit
+//
+//    return reinterpret_cast<const double&>(i);
+//}
 
-    return reinterpret_cast<const double&>(i);
-}
 
-
-void MathematicalOperations::newtonRaphson(DFUNC2D f, DFUNC2D d, double initialPoint, double* result)
+void MathematicalOperations::newtonRaphson(DFUNC1D f, DFUNC1D d, double initialPoint, double* result)
 {
     size_t iter = 0;
     *result = initialPoint;
@@ -36,7 +36,7 @@ void MathematicalOperations::newtonRaphson(DFUNC2D f, DFUNC2D d, double initialP
     } while(iter < MAX_ITER && abs(old_result - (*result)) > DE);
 }
 
-void MathematicalOperations::newtonRaphson(DFUNC2DA f, DFUNC2DA d, double initialPoint, double* result, double value)
+void MathematicalOperations::newtonRaphson(DFUNC2D f, DFUNC2D d, double initialPoint, double* result, double value)
 {
     size_t iter = 0;
     *result = initialPoint;
@@ -64,4 +64,115 @@ double MathematicalOperations::sqrt(double x)
     double result;
     newtonRaphson(parabola, derivParabola, 1.0, &result, x);
     return result;
+}
+
+double MathematicalOperations::derivative(DFUNC1D f, double x)
+{
+    double h = 1.0e-5;
+    h = abs(x) * h + h;
+    return (f(x + h) - f(x - h)) / (2 * h);
+}
+
+double MathematicalOperations::pow10(double x)
+{
+    double result = x * x;
+    result = result * result * x;
+    return result * result;
+}
+
+inline double pow10H(double x)
+{
+    double result = x * x;
+    result = result * result * x;
+    return result * result;
+}
+
+double MathematicalOperations::powInv10(double x)
+{
+    size_t iter = 0;
+    double result = 1.0;
+    double old_result;
+    do
+    {
+        old_result = result;
+        result = result - ((pow10(result) - x) / derivative(pow10H, result));
+        iter++;
+    } while(iter < MAX_ITER && abs(old_result - (result)) > DE);
+    return result;
+}
+
+double powH(double x, long n)
+{
+    if(n == 0)
+    {
+        return 1.0;
+    }
+
+    if(x < 0)
+    {
+        if(n % 2 == 1)
+        {
+            return -1.0 * powH(abs(x), n);
+        }
+        else
+        {
+            THROW_EXCEPTION("ERROR: NOT REAL!!!");
+            return NAN;
+        }
+    }
+
+    if(n < 0)
+    {
+        return powH(1.0 / x, abs(n));
+    }
+
+    if(n % 2 == 1)
+    {
+        return x * powH(x, n - 1);
+    }
+
+    double result = powH(x, n / 2);
+
+    return result * result;
+
+}
+
+double MathematicalOperations::pow(double x, double n)
+{
+
+    if(n < 0)
+    {
+        return pow(1.0 / x, abs(n));
+    }
+
+    double floatingPow = n - (long long)n;
+
+    if(floatingPow == 0.0 || floatingPow < DE)
+    {
+        return powH(x, ((long)n));
+    }
+    else
+    {
+        if(x < 0)
+        {
+            THROW_EXCEPTION("ERROR: NOT REAL!!!");
+            return NAN;
+        }
+    }
+
+    double base = x;
+    double result = 1.0;
+    long fPart;
+    for(size_t i = 0; i < POW_PRECISION; i++)
+    {
+        base = powInv10(base);
+
+        fPart = (long)(floatingPow * 10.0);
+        floatingPow = floatingPow * 10.0 - (double)fPart;
+
+        result = result * powH(base, fPart);
+
+    }
+
+    return result * powH(x, ((long)n));
 }

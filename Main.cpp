@@ -4,21 +4,13 @@
 #include <iostream>
 using namespace std;
 
-double sqr(double x)
-{
-    return x * x - 9;
-}
-
-double dsqr(double x)
-{
-    return 2 * x;
-}
-
 int main()
 {
-    double x = MathematicalOperations::getInstance()->sqrt(225);
 
-    printf("x = %lf\n", x);
+    double x;
+    x = MathematicalOperations::getInstance()->pow(0.49, -0.5);
+
+    printf("x = %5.14lf\n", x);
 
 
     return 0;
