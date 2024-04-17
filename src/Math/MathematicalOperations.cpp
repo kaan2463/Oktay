@@ -166,13 +166,127 @@ double MathematicalOperations::pow(double x, double n)
     for(size_t i = 0; i < POW_PRECISION; i++)
     {
         base = powInv10(base);
-
         fPart = (long)(floatingPow * 10.0);
         floatingPow = floatingPow * 10.0 - (double)fPart;
-
         result = result * powH(base, fPart);
-
     }
-
     return result * powH(x, ((long)n));
+}
+
+
+double MathematicalOperations::sin(double x)
+{
+    double powX = 1.0;
+    double fac = 1.0;
+    double result = 0.0;
+    double sign;
+    for(size_t i = 0; i < TRIGONOMETRIC_DEPTH - 1; i++)
+    {
+        if(i % 2 == 1)
+        {
+            sign = ((i - 1) / 2) % 2 == 0 ? 1.0 : -1.0;
+            result += sign * powX / fac;
+        }
+        fac *= (double)(i + 1);
+        powX = powX * x;
+    }
+    return result;
+}
+
+double MathematicalOperations::cos(double x)
+{
+    double powX = 1.0;
+    double fac = 1.0;
+    double result = 0.0;
+    double sign;
+    for(size_t i = 0; i < TRIGONOMETRIC_DEPTH; i++)
+    {
+        if(i % 2 == 0)
+        {
+            sign = (i / 2) % 2 == 0 ? 1.0 : -1.0;
+            result += sign * powX / fac;
+        }
+        fac *= (double)(i + 1);
+        powX = powX * x;
+    }
+    return result;
+}
+
+
+double MathematicalOperations::tan(double x)
+{
+    double powX = 1.0;
+    double fac = 1.0;
+    double resultSin = 0.0;
+    double resultCos = 0.0;
+    double signSin;
+    double signCos;
+    for(size_t i = 0; i < TRIGONOMETRIC_DEPTH; i++)
+    {
+        if(i % 2 == 1)
+        {
+            signSin = ((i - 1) / 2) % 2 == 0 ? 1.0 : -1.0;
+            resultSin += signSin * powX / fac;
+        }
+
+        if(i % 2 == 0)
+        {
+            signCos = (i / 2) % 2 == 0 ? 1.0 : -1.0;
+            resultCos += signCos * powX / fac;
+        }
+        fac *= (double)(i + 1);
+        powX = powX * x;
+    }
+    return resultSin / resultCos;
+}
+
+double MathematicalOperations::arcsin(double x)
+{
+    double powX = 1.0;
+    double pow4 = 1.0;
+    double fac = 1.0;
+    double fac2n = 1.0;
+    double result = 0.0;
+    for(size_t i = 0; i < TRIGONOMETRIC_DEPTH + 1; i++)
+    {
+        if(i > 1)
+        {
+            fac2n *= (double)(i - 1);
+        }
+        if(i % 2 == 1)
+        {
+            if(i > 1)
+            {
+                fac *= ((double)(i - 1)) / 2.0;
+            }
+            fac = fac == 0 ? 1.0 : fac;
+            result += (fac2n * powX) / (pow4 * (fac * fac) * ((double)i));
+            pow4 *= 4;
+        }
+        powX = powX * x;
+    }
+    return result;
+}
+
+double MathematicalOperations::arccos(double x)
+{
+    return (OKTAY_PI / 2.0) - arcsin(x);
+}
+
+double MathematicalOperations::arctan(double x)
+{
+    double powX = 1.0;
+    double result = 0.0;
+    double sign;
+    for(size_t i = 0; i < TRIGONOMETRIC_DEPTH - 1; i++)
+    {
+        if(i % 2 == 1)
+        {
+            sign = ((i - 1) / 2) % 2 == 0 ? 1.0 : -1.0;
+
+            result += sign * powX / ((double)i);
+        }
+        powX = powX * x;
+    }
+    return result;
 }

@@ -4,11 +4,12 @@
 #include <iostream>
 using namespace std;
 
+
 int main()
 {
 
     double x;
-    x = MathematicalOperations::getInstance()->pow(0.49, -0.5);
+    x = MathematicalOperations::getInstance()->arctan(0.707106);
 
     printf("x = %5.14lf\n", x);
 
