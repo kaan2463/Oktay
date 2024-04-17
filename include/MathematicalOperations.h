@@ -7,6 +7,10 @@
 
 #define POW_PRECISION 8
 
+#define TRIGONOMETRIC_DEPTH 19
+
+#define OKTAY_PI 3.14159265358979323846
+
 typedef double (*DFUNC1D)(double);
 typedef double (*DFUNC2D)(double, double);
 
@@ -63,5 +67,52 @@ public:
     * return x^n
     */
     double pow(double x, double n);
+
+    /*
+    * Sinus Function in radyan
+    * by using Taylor (or McLauren) Series
+    * sin(x)=sum _{n=0}^{infty}{frac{(-1)^{n}}{(2n+1)!}}x^{2n+1}
+    * All x
+    */
+    double sin(double x);
+
+    /*
+    * Cosinus Function in radyan
+    * by using Taylor (or McLauren) Series
+    * cos(x)=sum _{n=0}^{infty }{frac {(-1)^{n}}{(2n)!}}x^{2n}
+    * All x
+    */
+    double cos(double x);
+
+    /*
+    * Tangent Function in radyan
+    * by using Taylor (or McLauren) Series
+    * tan(x)=sum _{n=1}^{infty }{frac {B_{2n}(-4)^{n}(1-4^{n})}{(2n)!}}x^{2n-1}
+    * abs(x) <= PI / 2
+    */
+    double tan(double x);
+
+    /*
+    * Arcsin Function in radyan
+    * by using Taylor (or McLauren) Series
+    * arcsin(x)=sum _{n=0}^{infty }{frac {(2n)!}{4^{n}(n!)^{2}(2n+1)}}x^{2n+1}
+    * abs(x) <= 1
+    */
+    double arcsin(double x);
+
+    /*
+    * (PI / 2) - arcsin(x)
+    */
+    double arccos(double x);
+
+    /*
+    * arcangent Function in radyan
+    * by using Taylor (or McLauren) Series
+    * arctan(x)=sum _{n=0}^{infty }{frac {(-1)^{n}}{2n+1}}x^{2n+1}
+    * abs(x) <= 1
+    */
+    double arctan(double x);
+
+
 };
 #endif
