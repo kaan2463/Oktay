@@ -2,14 +2,16 @@
 #ifndef OKTAY_MATHEMATICAL_OPERATIONS
 #define OKTAY_MATHEMATICAL_OPERATIONS
 
-#define MAX_ITER    150
-#define DE          1.0e-8
+#define MAX_ITER                150
+#define DE                      1.0e-8
 
-#define POW_PRECISION 8
+#define POW_PRECISION           8
 
-#define TRIGONOMETRIC_DEPTH 19
+#define TRIGONOMETRIC_DEPTH     19
+#define LOGARITMIC_DEPTH        10000
 
-#define OKTAY_PI 3.14159265358979323846
+#define OKTAY_PI                3.14159265358979323846
+#define OKTAY_E                 2.71828182845904523536
 
 typedef double (*DFUNC1D)(double);
 typedef double (*DFUNC2D)(double, double);
@@ -69,6 +71,13 @@ public:
     double pow(double x, double n);
 
     /*
+    * Exponential function
+    * n : double
+    * return e^x
+    */
+    double exp(double x);
+
+    /*
     * Sinus Function in radyan
     * by using Taylor (or McLauren) Series
     * sin(x)=sum _{n=0}^{infty}{frac{(-1)^{n}}{(2n+1)!}}x^{2n+1}
@@ -113,6 +122,31 @@ public:
     */
     double arctan(double x);
 
+    /*
+    * Natural Algorithm byusing Taylor Series
+    * ln(x) = sum _{n=1}^{infty }{frac {(-1)^{n+1}{z-1}^n}{n}}
+    * 0 < x <= 2   >>> x = (0,inf]
+    */
+    double ln(double x);
+
+    /*
+    * Logarithm
+    * c = log_{base}(x)
+    * log_{base}(x) = ln(x) / ln(base)
+    */
+    double log(double base, double x);
+
+    /*
+    * Logarithm on base2
+    * log2(x) = ln(x) / ln(2)
+    */
+    double log2(double x);
+
+    /*
+    * Logarithm on base10
+    * log10(x) = ln(x) / ln(10)
+    */
+    double log10(double x);
 
 };
 #endif
