@@ -9,7 +9,7 @@ int main()
 {
 
     double x;
-    x = MathematicalOperations::getInstance()->arctan(0.707106);
+    x = MathematicalOperations::getInstance()->log10(156);
 
     printf("x = %5.14lf\n", x);
 

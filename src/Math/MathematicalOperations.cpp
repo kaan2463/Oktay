@@ -173,6 +173,10 @@ double MathematicalOperations::pow(double x, double n)
     return result * powH(x, ((long)n));
 }
 
+double MathematicalOperations::exp(double x)
+{
+    return pow(OKTAY_E, x);
+}
 
 double MathematicalOperations::sin(double x)
 {
@@ -289,4 +293,54 @@ double MathematicalOperations::arctan(double x)
         powX = powX * x;
     }
     return result;
+}
+
+
+double MathematicalOperations::ln(double x) 
+{
+    double result = 0.0;
+    double sign;
+    double z = x > 2 ? (1 / x) - 1 : x-1;
+    double powX = z;
+    for (size_t i=1;i < LOGARITMIC_DEPTH;i++)
+    {
+        sign = i % 2 == 1 ? 1.0 : -1.0;
+        result += (sign * powX) / ((double)i);
+        powX *= z;
+    }
+    return x > 2 ? -result : result;
+}
+
+double MathematicalOperations::log(double base, double x)
+{
+    double resultBase = 0.0;
+    double resultX = 0.0;
+    double sign;
+    double zX = x > 2 ? (1 / x) - 1 : x - 1;
+    double zBase = base > 2 ? (1 / base) - 1 : base - 1;
+    double powBase = zBase;
+    double powX = zX;
+    for (size_t i = 1; i < LOGARITMIC_DEPTH; i++)
+    {
+        sign = i % 2 == 1 ? 1.0 : -1.0;
+        resultX += (sign * powX) / ((double)i);
+        resultBase += (sign * powBase) / ((double)i);
+        powX *= zX;
+        powBase *= zBase;
+    }
+
+    resultBase = base > 2 ? -resultBase : resultBase;
+    resultX = x > 2 ? -resultX : resultX;
+
+    return (resultX/resultBase);
+}
+
+double MathematicalOperations::log2(double x) 
+{
+    return log(2.0, x);
+}
+
+double MathematicalOperations::log10(double x) 
+{
+    return log(10.0, x);
 }
