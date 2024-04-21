@@ -58,7 +58,7 @@ public:
     * U : upper triangular matrix
     * A = LU
     */
-    void LUDecomposition2d(double* A, double* L, double* U, size_t M);
+    void lu(double* A, double* L, double* U, size_t M);
 
     /*
     * Determinant of square matrix A

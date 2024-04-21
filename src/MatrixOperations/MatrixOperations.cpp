@@ -133,7 +133,7 @@ void MatrixOperations::transpose2d(double* A, size_t M, size_t N)
     }
 }
 
-void MatrixOperations::LUDecomposition2d(double* A, double* L, double* U, size_t M)
+void MatrixOperations::lu(double* A, double* L, double* U, size_t M)
 {
     size_t ik, ii, kj, km, mj, kk, im, mk;
 
@@ -181,7 +181,7 @@ double MatrixOperations::det2d(double* A, size_t M)
     double* L = new double[M * M];
     double* U = new double[M * M];
 
-    LUDecomposition2d(A, L, U, M);
+    lu(A, L, U, M);
 
     double det = 1.0;
     size_t ii;
