@@ -31,6 +31,16 @@ void MatrixOperations::dhad(double* A, double* B, double* C, size_t M)
     }
 }
 
+double MatrixOperations::ddot(double* A, double* B, size_t M)
+{
+    double sum = 0.0;
+    for(size_t i = 0; i < M; i++)
+    {
+        sum += A[i] * B[i];
+    }
+    return sum;
+}
+
 void MatrixOperations::dmul(double* A, double* B, double* C, size_t M, size_t N, size_t K)
 {
     double value;
@@ -45,7 +55,7 @@ void MatrixOperations::dmul(double* A, double* B, double* C, size_t M, size_t N,
             value = 0;
             for(size_t ki = 0; ki < K; ki++)
             {
-                kn = ki * M + ni;
+                kn = ki * N + ni;
                 mk = mi * K + ki;
 
                 value += A[mk] * B[kn];
@@ -55,17 +65,35 @@ void MatrixOperations::dmul(double* A, double* B, double* C, size_t M, size_t N,
     }
 }
 
-void MatrixOperations::dsub(double* A, double* B, double* C, size_t M, size_t N)
+void MatrixOperations::dmul(double alpha, double* A, double* B, double* C, size_t M, size_t N, size_t K)
 {
+    double value;
+    size_t mk;
+    size_t kn;
     size_t mn;
     for(size_t mi = 0; mi < M; mi++)
     {
         for(size_t ni = 0; ni < N; ni++)
         {
             mn = mi * N + ni;
+            value = 0;
+            for(size_t ki = 0; ki < K; ki++)
+            {
+                kn = ki * N + ni;
+                mk = mi * K + ki;
 
-            C[mn] = A[mn] - B[mn];
+                value += A[mk] * B[kn];
+            }
+            C[mn] = alpha * value;
         }
+    }
+}
+
+void MatrixOperations::dsub(double* A, double* B, double* C, size_t sz)
+{
+    for(size_t i = 0; i < sz; i++)
+    {
+        C[i] = A[i] - B[i];
     }
 }
 
@@ -83,17 +111,11 @@ void MatrixOperations::dadd(double* A, double* B, double* C, size_t M, size_t N)
     }
 }
 
-void MatrixOperations::dcpy(double* A, double* B, size_t M, size_t N)
+void MatrixOperations::dcpy(double* dest, double* src, size_t sz)
 {
-    size_t mn;
-    for(size_t mi = 0; mi < M; mi++)
+    for(size_t i = 0; i < sz; i++)
     {
-        for(size_t ni = 0; ni < N; ni++)
-        {
-            mn = mi * N + ni;
-
-            A[mn] = B[mn];
-        }
+        dest[i] = src[i];
     }
 }
 
@@ -174,6 +196,124 @@ void MatrixOperations::lu(double* A, double* L, double* U, size_t M)
             L[ik] /= U[kk];
         }
     }
+}
+
+/*
+* Generate M*M Identity Matrix
+*/
+inline static void eye(double* A, size_t M)
+{
+    size_t mn;
+    for(size_t m = 0; m < M; m++)
+    {
+        for(size_t n = 0; n < M; n++)
+        {
+            mn = m * M + n;
+            if(m == n)
+            {
+                A[mn] = 1.0;
+            }
+            else
+            {
+                A[mn] = 0.0;
+            }
+
+        }
+    }
+}
+
+inline static double norm(double* V, size_t M)
+{
+    double sum = 0.0;
+    for(size_t i = 0; i < M; i++)
+    {
+        sum += V[i];
+    }
+    return sqrt(sum);
+}
+
+inline static double norm(double* V, size_t stride, size_t M)
+{
+    double sum = 0.0;
+    for(size_t i = 0; i < M; i++)
+    {
+        sum += V[i * stride] * V[i * stride];
+    }
+    return sqrt(sum);
+}
+
+//implementation: https://www.cs.cornell.edu/~bindel/class/cs6210-f09/lec18.pdf
+void MatrixOperations::qr(double* A, double* Q, double* R, size_t M, size_t N)
+{
+    if(M < N)
+    {
+        THROW_EXCEPTION("M can not be least than N!");
+        return;
+    }
+    eye(Q, M);
+    dcpy(R, A, M * N);
+
+    double normx, s, u1, tau;
+    double t;
+    double* C = new double[M * M];
+    double* T = new double[M * M];
+    double* w = new double[M];
+    size_t ii;
+
+    for(size_t i = 0; i < N; i++)
+    {
+        ii = i * N + i;
+        normx = norm(&R[i + i * N], N, M - i);
+        s = R[ii] < 0 ? 1.0 : -1.0;
+        u1 = R[ii] - s * normx;
+        w[0] = 1.0;
+        for(size_t j = 1; j < M - i; j++)
+        {
+            w[j] = R[i + (j + i) * N] / u1;
+        }
+        tau = -s * u1 / normx;
+
+        dmul(tau, w, w, C, M - i, M - i, 1); // C = w*w' => C=C'
+        dmul(C, &R[i * N], T, M - i, N, M - i);
+        dsub(&R[i * N], T, &R[i * N], (M - i) * N);
+
+        //for(size_t j = 0; j < M; j++)
+        //{
+        //    for(size_t k = 0; k < M - i; k++)
+        //    {
+        //        t = ddot(&Q[i + j * M], &C[k * (M - i)], M - i);
+        //        T[j * (M - i) + k] = t;
+        //    }
+        //}
+        //
+        //for(size_t j = 0; j < M; j++)
+        //{
+        //    dsub(&Q[i + j * M], &T[j * (M - 1)], &Q[i + j * M], M - i);
+        //}
+
+        for(size_t j = 0; j < M; j++)
+        {
+            for(size_t k = 0; k < M - i; k++)
+            {
+                t = 0;
+                for(size_t l = 0; l < M - i; l++)
+                {
+                    t += Q[i + j * M + l] * C[l * (M - i) + k];
+                }
+                T[j * (M - i) + k] = t;
+            }
+        }
+
+        for(size_t j = 0; j < M; j++)
+        {
+            for(size_t k = 0; k < M - i; k++)
+            {
+                Q[i + j * M + k] -= T[j * (M - i) + k];
+            }
+        }
+
+    }
+
 }
 
 double MatrixOperations::det2d(double* A, size_t M)
