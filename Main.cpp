@@ -5,43 +5,44 @@
 #include <MatrixOperations.h>
 using namespace std;
 
+#define MAT MatrixOperations::getInstance()
+
 
 int main()
 {
 
-    size_t M = 5;
-    size_t N = 4;
+    size_t M = 4;
 
     //double* A = new double[M * N];
-
-    double A[] = { 1,2,3,4, 2,3,4,5, 3,4,5,6, 4,5,6,7, 5,6,7,8 };
+   // V = [9 - 4 - 2 0; -56 32 - 28 44; -14 - 14 6 - 14; 42 - 33 21 - 45]
+    double A[] = { 9, -4, -2, 0,
+        -56, 32 ,-28, 44,
+        -14, -14, 6, -14,
+        42, -33, 21, -45 };
     double B[] = {
-        3,4,5,
-        4,5,6,
-        5,6,7,
-        6,7,8 };
+        2,0,0,
+        0,3,4,
+        0,4,9 };
 
-    double* Q = new double[M * M];
-    double* R = new double[M * N];
 
-    double* X = new double[M * N];
+    double* E = new double[M * M];
+    double* V = new double[M * M];
+    double* IV = new double[M * M];
 
-    //for(size_t i = 0; i < M; i++)
-    //{
-    //    for(size_t j = 0; j < N; j++)
-    //    {
-    //        A[i * N + j] = (i + 0.02 * i + 1.0);
-    //    }
-    //}
+    MAT->eig(A, E, V, M);
+    MAT->inverse(V, IV, M);
+    MAT->print1d(E, M);
+    MAT->print2d(V, M, M);
+    MAT->print2d(IV, M, M);
 
-    MatrixOperations::getInstance()->qr(A, Q, R, M, N);
-
-    MatrixOperations::getInstance()->print2d(A, M, N);
-    MatrixOperations::getInstance()->print2d(R, M, N);
-    MatrixOperations::getInstance()->print2d(Q, M, M);
-    MatrixOperations::getInstance()->dmul(Q, R, X, M, N, M);
-    MatrixOperations::getInstance()->print2d(X, M, N);
-
+    double* T = new double[M * M];
+    double* C = new double[M * M];
+    MAT->dmul(IV, A, C, M, M, M);
+    MAT->dmul(C, V, T, M, M, M);
+    MAT->print2d(T, M, M);
+    MAT->eig(T, E, V, M);
+    MAT->print1d(E, M);
+    MAT->print2d(V, M, M);
 
     return 0;
 }

@@ -247,7 +247,7 @@ void MatrixOperations::qr(double* A, double* Q, double* R, size_t M, size_t N)
 {
     if(M < N)
     {
-        THROW_EXCEPTION("M can not be least than N!");
+        THROW_EXCEPTION("M can not be less than N!");
         return;
     }
     eye(Q, M);
@@ -277,20 +277,6 @@ void MatrixOperations::qr(double* A, double* Q, double* R, size_t M, size_t N)
         dmul(C, &R[i * N], T, M - i, N, M - i);
         dsub(&R[i * N], T, &R[i * N], (M - i) * N);
 
-        //for(size_t j = 0; j < M; j++)
-        //{
-        //    for(size_t k = 0; k < M - i; k++)
-        //    {
-        //        t = ddot(&Q[i + j * M], &C[k * (M - i)], M - i);
-        //        T[j * (M - i) + k] = t;
-        //    }
-        //}
-        //
-        //for(size_t j = 0; j < M; j++)
-        //{
-        //    dsub(&Q[i + j * M], &T[j * (M - 1)], &Q[i + j * M], M - i);
-        //}
-
         for(size_t j = 0; j < M; j++)
         {
             for(size_t k = 0; k < M - i; k++)
@@ -313,6 +299,50 @@ void MatrixOperations::qr(double* A, double* Q, double* R, size_t M, size_t N)
         }
 
     }
+    delete[] C;
+    delete[] T;
+    delete[] w;
+
+}
+
+void MatrixOperations::eig(double* A, double* E, double* V, size_t M)
+{
+    double* A0 = new double[M * M];
+    double* Q = new double[M * M];
+    double* R = new double[M * M];
+
+    double* T = new double[M * M];
+
+    size_t iter = 0;
+    size_t indexL;
+    double sumL;
+    dcpy(A0, A, M * M);
+    eye(V, M);
+    do
+    {
+        qr(A0, Q, R, M, M);
+        dmul(R, Q, A0, M, M, M);
+        dmul(Q, V, T, M, M, M);
+        dcpy(V, T, M * M);
+
+        sumL = 0.0;
+        for(size_t i = 0; i < M - 1; i++)
+        {
+            for(size_t j = 0; j < i + 1; j++)
+            {
+                indexL = i * M + j + M;
+                sumL += abs(A0[indexL]);
+            }
+        }
+
+        iter++;
+    } while(EIG_DE < abs(sumL) && iter < MAX_ITER_EIG);
+
+    for(size_t i = 0; i < M; i++)
+    {
+        E[i] = A0[i * M + i];
+    }
+
 
 }
 
@@ -350,7 +380,7 @@ void MatrixOperations::inverse(double* A, double* B, size_t M)
 {
     memset(B, 0, sizeof(double) * M * M);
 
-    size_t ii, ij, jj, jk, ji, ik;
+    size_t ii, ij, jk, ji, ik;
     double ci, cj;
 
     double* L = new double[M * M];
@@ -432,6 +462,16 @@ void MatrixOperations::inverse(double* A, double* B, size_t M)
         }
     }
 
+}
+
+void MatrixOperations::print1d(double* A, size_t M)
+{
+    for(size_t mi = 0; mi < M; mi++)
+    {
+        printf("%lf ", A[mi]);
+    }
+    printf("\n");
+    printf("\n");
 }
 
 

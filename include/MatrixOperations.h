@@ -1,5 +1,9 @@
 #ifndef OKTAY_MATRIX_OPERATIONS
 #define OKTAY_MATRIX_OPERATIONS
+
+#define MAX_ITER_EIG        255
+#define EIG_DE              1.0e-6
+
 class MatrixOperations
 {
 private:
@@ -80,6 +84,16 @@ public:
     */
     void qr(double* A, double* Q, double* R, size_t M, size_t N);
 
+    /*
+    * Eigenvalue decomposition
+    * QR factorization algorithm
+    * E_{n}   : eigenvlaues
+    * V_{n*n} : eigenvectors
+    * A*V = E*V
+    * A = V*E*V'
+    */
+    void eig(double* A, double* E, double* V, size_t M);
+
 
     /*
     * Determinant of square matrix A
@@ -93,6 +107,11 @@ public:
     * C_{ij} = A^{-1}_{ij}
     */
     void inverse(double* A, double* C, size_t M);
+
+    /*
+    * Helper function for print Matrix
+    */
+    void print1d(double* A, size_t M);
 
     /*
     * Helper function for print Matrix
