@@ -94,6 +94,12 @@ public:
     */
     void eig(double* A, double* E, double* V, size_t M);
 
+    /*
+    * Singular Value Decomposition
+    * A = U*E*V
+    */
+    void svd(double* A, double* U, double* E, double* V, size_t M, size_t N);
+
 
     /*
     * Determinant of square matrix A

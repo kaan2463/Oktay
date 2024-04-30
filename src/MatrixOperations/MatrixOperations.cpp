@@ -310,8 +310,9 @@ void MatrixOperations::eig(double* A, double* E, double* V, size_t M)
     double* A0 = new double[M * M];
     double* Q = new double[M * M];
     double* R = new double[M * M];
-
     double* T = new double[M * M];
+
+
 
     size_t iter = 0;
     size_t indexL;
@@ -343,6 +344,50 @@ void MatrixOperations::eig(double* A, double* E, double* V, size_t M)
         E[i] = A0[i * M + i];
     }
 
+    delete[] A0;
+    delete[] Q;
+    delete[] R;
+    delete[] T;
+}
+
+void MatrixOperations::svd(double* A, double* U, double* E, double* V, size_t M, size_t N)
+{
+    size_t P = M > N ? M : N;
+    double* T = new double[P * P];
+    double* AT = new double[M * N];
+    double* EE = new double[P];
+
+    dcpy(AT, A, M * N);
+    transpose2d(AT, M, N);
+
+    dmul(A, AT, T, M, M, N);
+
+    eig(T, EE, U, M);
+
+    if(M == P)
+    {
+        for(size_t i = 0; i < M; i++)
+        {
+            E[i] = sqrt(EE[i]);
+        }
+    }
+
+    dmul(AT, A, T, N, N, M);
+
+    eig(T, EE, V, N);
+
+    if(N == P)
+    {
+        for(size_t i = 0; i < N; i++)
+        {
+            E[i] = sqrt(EE[i]);
+        }
+    }
+
+
+    delete[] T;
+    delete[] AT;
+    delete[] EE;
 
 }
 
