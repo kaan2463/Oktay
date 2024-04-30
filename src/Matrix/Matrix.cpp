@@ -5,7 +5,7 @@ Matrix2d::Matrix2d(const Matrix2d& A) :Matrix(m* n)
 {
     this->m = A.m;
     this->n = A.n;
-    MatrixOperations::getInstance()->dcpy(Data(), ((Matrix)A).Data(), m, n);
+    MatrixOperations::getInstance()->dcpy(Data(), ((Matrix)A).Data(), m * n);
 }
 
 void Matrix2d::print()
@@ -30,7 +30,7 @@ Matrix2d Matrix2d::operator+(Matrix2d& A)
 Matrix2d Matrix2d::operator-(Matrix2d& A)
 {
     Matrix2d C(A.m, A.n);
-    MatrixOperations::getInstance()->dsub(Data(), A.Data(), C.Data(), A.m, A.n);
+    MatrixOperations::getInstance()->dsub(Data(), A.Data(), C.Data(), A.m * A.n);
     return C;
 }
 
@@ -38,7 +38,7 @@ Matrix2d& Matrix2d::operator=(Matrix2d& A)
 {
     m = A.m;
     n = A.n;
-    MatrixOperations::getInstance()->dcpy(Data(), A.Data(), A.m, A.n);
+    MatrixOperations::getInstance()->dcpy(Data(), A.Data(), A.m * A.n);
     return *this;
 }
 
@@ -46,14 +46,14 @@ Matrix2d& Matrix2d::operator=(const Matrix2d& A)
 {
     m = A.m;
     n = A.n;
-    MatrixOperations::getInstance()->dcpy(Data(), ((Matrix)A).Data(), A.m, A.n);
+    MatrixOperations::getInstance()->dcpy(Data(), ((Matrix)A).Data(), A.m * A.n);
     return *this;
 }
 
 Matrix2d Matrix2d::operator+()
 {
     Matrix2d C(m, n);
-    MatrixOperations::getInstance()->dcpy(C.Data(), Data(), m, n);
+    MatrixOperations::getInstance()->dcpy(C.Data(), Data(), m * n);
     MatrixOperations::getInstance()->transpose2d(C.Data(), m, n);
     C.Dim2d(n, m);
     return C;

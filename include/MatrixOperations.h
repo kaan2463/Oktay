@@ -1,5 +1,9 @@
 #ifndef OKTAY_MATRIX_OPERATIONS
 #define OKTAY_MATRIX_OPERATIONS
+
+#define MAX_ITER_EIG        255
+#define EIG_DE              1.0e-6
+
 class MatrixOperations
 {
 private:
@@ -22,16 +26,28 @@ public:
     void dhad(double* A, double* B, double* C, size_t M);
 
     /*
+    * Dot product
+    * result = sum_{m} A_{m} * B_{m}
+    */
+    double ddot(double* A, double* B, size_t M);
+
+    /*
     * Matrix Multiplication
     * C_{mn} = sum_{K} A_{mk} * B_{kn}
     */
     void dmul(double* A, double* B, double* C, size_t M, size_t N, size_t K);
 
     /*
+    * Matrix Multiplication with alpha
+    * C_{mn} = sum_{K} alpha * A_{mk} * B_{kn}
+    */
+    void dmul(double alpha, double* A, double* B, double* C, size_t M, size_t N, size_t K);
+
+    /*
     * Matrix subtraction
     * C_{ij} = A_{ij} - B_{ij}
     */
-    void dsub(double* A, double* B, double* C, size_t M, size_t N);
+    void dsub(double* A, double* B, double* C, size_t sz);
 
     /*
     * Matrix addition
@@ -41,9 +57,8 @@ public:
 
     /*
     * Matrix copy
-    * B_{ij} = A_{ij}
     */
-    void dcpy(double* A, double* B, size_t M, size_t N);
+    void dcpy(double* dest, double* src, size_t sz);
 
     /*
     * In-Place transpose
@@ -58,7 +73,33 @@ public:
     * U : upper triangular matrix
     * A = LU
     */
-    void LUDecomposition2d(double* A, double* L, double* U, size_t M);
+    void lu(double* A, double* L, double* U, size_t M);
+
+    /*
+    * QR decomposition (Householder)
+    * A = QR
+    * Where Q is an orthogonal matrix (Q^{-1} = Q^{T})
+    * And R is an upper triangular matrix
+    * M >= N
+    */
+    void qr(double* A, double* Q, double* R, size_t M, size_t N);
+
+    /*
+    * Eigenvalue decomposition
+    * QR factorization algorithm
+    * E_{n}   : eigenvlaues
+    * V_{n*n} : eigenvectors
+    * A*V = E*V
+    * A = V*E*V'
+    */
+    void eig(double* A, double* E, double* V, size_t M);
+
+    /*
+    * Singular Value Decomposition
+    * A = U*E*V
+    */
+    void svd(double* A, double* U, double* E, double* V, size_t M, size_t N);
+
 
     /*
     * Determinant of square matrix A
@@ -72,6 +113,11 @@ public:
     * C_{ij} = A^{-1}_{ij}
     */
     void inverse(double* A, double* C, size_t M);
+
+    /*
+    * Helper function for print Matrix
+    */
+    void print1d(double* A, size_t M);
 
     /*
     * Helper function for print Matrix
