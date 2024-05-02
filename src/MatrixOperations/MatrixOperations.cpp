@@ -1,6 +1,8 @@
-#include "Exception.h"
-#include "MatrixOperations.h"
-#include <iostream>
+#include <Exception.h>
+#include <io.h>
+#include <MathematicalOperations.h>
+#include <MatrixOperations.h>
+#include <util.h>
 
 #define DE 1.0e-8
 
@@ -147,7 +149,7 @@ void MatrixOperations::transpose2d(double* A, size_t M, size_t N)
     {
         for(size_t i = 1; i < M; i++)
         {
-            std::rotate(A + i, A + i * N, A + i * N + 1);
+            rotate(A + i, A + i * N, A + i * N + 1);
         }
 
         A += M;
@@ -159,8 +161,8 @@ void MatrixOperations::lu(double* A, double* L, double* U, size_t M)
 {
     size_t ik, ii, kj, km, mj, kk, im, mk;
 
-    memset(L, 0, sizeof(double) * M * M);
-    memset(U, 0, sizeof(double) * M * M);
+    memsetW(L, 0, sizeof(double) * M * M);
+    memsetW(U, 0, sizeof(double) * M * M);
 
     for(size_t i = 0; i < M; ++i)
     {
@@ -229,7 +231,7 @@ inline static double norm(double* V, size_t M)
     {
         sum += V[i];
     }
-    return sqrt(sum);
+    return MathematicalOperations::getInstance()->sqrt(sum);
 }
 
 inline static double norm(double* V, size_t stride, size_t M)
@@ -239,7 +241,7 @@ inline static double norm(double* V, size_t stride, size_t M)
     {
         sum += V[i * stride] * V[i * stride];
     }
-    return sqrt(sum);
+    return MathematicalOperations::getInstance()->sqrt(sum);
 }
 
 //implementation: https://www.cs.cornell.edu/~bindel/class/cs6210-f09/lec18.pdf
@@ -332,12 +334,12 @@ void MatrixOperations::eig(double* A, double* E, double* V, size_t M)
             for(size_t j = 0; j < i + 1; j++)
             {
                 indexL = i * M + j + M;
-                sumL += abs(A0[indexL]);
+                sumL += MathematicalOperations::getInstance()->abs(A0[indexL]);
             }
         }
 
         iter++;
-    } while(EIG_DE < abs(sumL) && iter < MAX_ITER_EIG);
+    } while(EIG_DE < MathematicalOperations::getInstance()->abs(sumL) && iter < MAX_ITER_EIG);
 
     for(size_t i = 0; i < M; i++)
     {
@@ -368,7 +370,7 @@ void MatrixOperations::svd(double* A, double* U, double* E, double* V, size_t M,
     {
         for(size_t i = 0; i < M; i++)
         {
-            E[i] = sqrt(EE[i]);
+            E[i] = MathematicalOperations::getInstance()->sqrt(EE[i]);
         }
     }
 
@@ -380,7 +382,7 @@ void MatrixOperations::svd(double* A, double* U, double* E, double* V, size_t M,
     {
         for(size_t i = 0; i < N; i++)
         {
-            E[i] = sqrt(EE[i]);
+            E[i] = MathematicalOperations::getInstance()->sqrt(EE[i]);
         }
     }
 
@@ -423,14 +425,14 @@ double MatrixOperations::det2d(double* A, size_t M)
 
 void MatrixOperations::inverse(double* A, double* B, size_t M)
 {
-    memset(B, 0, sizeof(double) * M * M);
+    memsetW(B, 0, sizeof(double) * M * M);
 
     size_t ii, ij, jk, ji, ik;
     double ci, cj;
 
     double* L = new double[M * M];
 
-    memcpy(L, A, sizeof(double) * M * M);
+    memcpyW(L, A, sizeof(double) * M * M);
 
     for(size_t i = 0; i < M; i++)
     {
@@ -442,7 +444,7 @@ void MatrixOperations::inverse(double* A, double* B, size_t M)
     {
         ii = i * M + i;
 
-        if(abs(L[ii]) < DE) // or equal 0.0 
+        if(MathematicalOperations::getInstance()->abs(L[ii]) < DE) // or equal 0.0 
         {
             for(size_t j = i + 1; j < M; j++)
             {
@@ -461,7 +463,7 @@ void MatrixOperations::inverse(double* A, double* B, size_t M)
             }
         }
 
-        if(abs(L[ii]) < DE)
+        if(MathematicalOperations::getInstance()->abs(L[ii]) < DE)
         {
             THROW_EXCEPTION("Singular Matrix\n");
             return;
@@ -513,10 +515,10 @@ void MatrixOperations::print1d(double* A, size_t M)
 {
     for(size_t mi = 0; mi < M; mi++)
     {
-        printf("%lf ", A[mi]);
+        printfW("%lf ", A[mi]);
     }
-    printf("\n");
-    printf("\n");
+    printfW("\n");
+    printfW("\n");
 }
 
 
@@ -526,9 +528,9 @@ void MatrixOperations::print2d(double* A, size_t M, size_t N)
     {
         for(size_t ni = 0; ni < N; ni++)
         {
-            printf("%lf ", A[mi * N + ni]);
+            printfW("%lf ", A[mi * N + ni]);
         }
-        printf("\n");
+        printfW("\n");
     }
-    printf("\n");
+    printfW("\n");
 }

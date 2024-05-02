@@ -14,13 +14,18 @@ MathematicalOperations* MathematicalOperations::getInstance()
     return INSTANCE;
 }
 
-//inline double abs(double x)
-//{
-//    uint64_t i = reinterpret_cast<const uint64_t&>(x);
-//    i &= 0x7FFFFFFFFFFFFFFFULL; // clear sign bit
-//
-//    return reinterpret_cast<const double&>(i);
-//}
+inline double abs(double x)
+{
+    uint64_t i = reinterpret_cast<const uint64_t&>(x);
+    i &= 0x7FFFFFFFFFFFFFFFULL; // clear sign bit
+
+    return reinterpret_cast<const double&>(i);
+}
+
+double MathematicalOperations::abs(double x)
+{
+    return ::abs(x);
+}
 
 
 void MathematicalOperations::newtonRaphson(DFUNC1D f, DFUNC1D d, double initialPoint, double* result)
@@ -117,13 +122,13 @@ double powH(double x, long n)
         else
         {
             THROW_EXCEPTION("ERROR: NOT REAL!!!");
-            return NAN;
+            return OKTAY_NAN;
         }
     }
 
     if(n < 0)
     {
-        return powH(1.0 / x, abs(n));
+        return powH(1.0 / x, abs((double)n));
     }
 
     if(n % 2 == 1)
@@ -156,7 +161,7 @@ double MathematicalOperations::pow(double x, double n)
         if(x < 0)
         {
             THROW_EXCEPTION("ERROR: NOT REAL!!!");
-            return NAN;
+            return OKTAY_NAN;
         }
     }
 
@@ -296,13 +301,13 @@ double MathematicalOperations::arctan(double x)
 }
 
 
-double MathematicalOperations::ln(double x) 
+double MathematicalOperations::ln(double x)
 {
     double result = 0.0;
     double sign;
-    double z = x > 2 ? (1 / x) - 1 : x-1;
+    double z = x > 2 ? (1 / x) - 1 : x - 1;
     double powX = z;
-    for (size_t i=1;i < LOGARITMIC_DEPTH;i++)
+    for(size_t i = 1; i < LOGARITMIC_DEPTH; i++)
     {
         sign = i % 2 == 1 ? 1.0 : -1.0;
         result += (sign * powX) / ((double)i);
@@ -320,7 +325,7 @@ double MathematicalOperations::log(double base, double x)
     double zBase = base > 2 ? (1 / base) - 1 : base - 1;
     double powBase = zBase;
     double powX = zX;
-    for (size_t i = 1; i < LOGARITMIC_DEPTH; i++)
+    for(size_t i = 1; i < LOGARITMIC_DEPTH; i++)
     {
         sign = i % 2 == 1 ? 1.0 : -1.0;
         resultX += (sign * powX) / ((double)i);
@@ -332,15 +337,15 @@ double MathematicalOperations::log(double base, double x)
     resultBase = base > 2 ? -resultBase : resultBase;
     resultX = x > 2 ? -resultX : resultX;
 
-    return (resultX/resultBase);
+    return (resultX / resultBase);
 }
 
-double MathematicalOperations::log2(double x) 
+double MathematicalOperations::log2(double x)
 {
     return log(2.0, x);
 }
 
-double MathematicalOperations::log10(double x) 
+double MathematicalOperations::log10(double x)
 {
     return log(10.0, x);
 }

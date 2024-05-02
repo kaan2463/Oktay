@@ -13,8 +13,24 @@
 #define OKTAY_PI                3.14159265358979323846
 #define OKTAY_E                 2.71828182845904523536
 
+#ifndef _HUGE_ENUF
+#define _HUGE_ENUF  1e+300  // _HUGE_ENUF*_HUGE_ENUF must overflow
+#endif
+
+#define INFINITY   ((float)(_HUGE_ENUF * _HUGE_ENUF))
+#define HUGE_VAL   ((double)INFINITY)
+#define HUGE_VALF  ((float)INFINITY)
+#define HUGE_VALL  ((long double)INFINITY)
+#ifndef _UCRT_NEGATIVE_NAN
+// This operation creates a negative NAN adding a - to make it positive
+#define OKTAY_NAN        (-(float)(INFINITY * 0.0F))
+#endif
+
+typedef unsigned long long uint64_t;
+
 typedef double (*DFUNC1D)(double);
 typedef double (*DFUNC2D)(double, double);
+
 
 class MathematicalOperations
 {
@@ -24,6 +40,12 @@ private:
 public:
     static MathematicalOperations* getInstance();
     ~MathematicalOperations() {}
+
+    /*
+    * Absolute value
+    * return |x|
+    */
+    double abs(double x);
 
     /*
     * Newton Raphson method
@@ -149,4 +171,5 @@ public:
     double log10(double x);
 
 };
+
 #endif
