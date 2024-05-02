@@ -1,12 +1,13 @@
 #include <MathematicalOperations.h>
 #include <Matrix.h>
 
-#include <iostream>
+#include <io.h>
+#include <math.h>
 #include <MatrixOperations.h>
 using namespace std;
 
 #define MAT MatrixOperations::getInstance()
-
+#define MATH MathematicalOperations::getInstance()
 
 int main()
 {
@@ -41,6 +42,16 @@ int main()
     MAT->print2d(U, M, M);
     MAT->print1d(E, M > N ? M : N);
     MAT->print2d(V, N, N);
+
+    double error = 0.0;
+    for(size_t i = 12323; i < 1001001; i++)
+    {
+        error += MATH->abs(MATH->sqrt((double)i) - sqrt((double)i));
+        //printfW("sqrt(%lf) %lf, %lf\n", (double)i, MATH->sqrt((double)i), sqrt((double)i));
+    }
+
+    printfW("error =  %lf \n", error);
+
 
     return 0;
 }
