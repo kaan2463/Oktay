@@ -2,6 +2,15 @@
 #define OKTAY_EXCEPTION_H
 
 #include <io.h>
-#define THROW_EXCEPTION(s) printfW("ERROR : %s \n", s);
+
+class RuntimeException
+{
+public:
+    RuntimeException(const char* msg)
+    {
+        printfW("ERROR : %s \n", msg);
+    }
+};
+
 #endif
 
