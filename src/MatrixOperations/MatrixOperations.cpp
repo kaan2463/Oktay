@@ -249,8 +249,7 @@ void MatrixOperations::qr(double* A, double* Q, double* R, size_t M, size_t N)
 {
     if(M < N)
     {
-        THROW_EXCEPTION("M can not be less than N!");
-        return;
+        throw RuntimeException("M can not be less than N!");
     }
     eye(Q, M);
     dcpy(R, A, M * N);
@@ -465,8 +464,7 @@ void MatrixOperations::inverse(double* A, double* B, size_t M)
 
         if(MathematicalOperations::getInstance()->abs(L[ii]) < DE)
         {
-            THROW_EXCEPTION("Singular Matrix\n");
-            return;
+            throw RuntimeException("Singular Matrix\n");
         }
 
         ci = 1.0 / L[ii];

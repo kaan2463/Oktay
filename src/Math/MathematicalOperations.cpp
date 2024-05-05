@@ -121,8 +121,7 @@ double powH(double x, long n)
         }
         else
         {
-            THROW_EXCEPTION("ERROR: NOT REAL!!!");
-            return OKTAY_NAN;
+            throw RuntimeException("NOT REAL!!!"); //NAN (not reel)
         }
     }
 
@@ -160,8 +159,7 @@ double MathematicalOperations::pow(double x, double n)
     {
         if(x < 0)
         {
-            THROW_EXCEPTION("ERROR: NOT REAL!!!");
-            return OKTAY_NAN;
+            throw RuntimeException("NOT REAL!!!"); //NAN (not reel)
         }
     }
 
