@@ -133,6 +133,8 @@
     <ClCompile Include="..\..\Main.cpp" />
     <ClCompile Include="..\..\src\io\io.cpp" />
     <ClCompile Include="..\..\src\Math\MathematicalOperations.cpp" />
+    <ClCompile Include="..\..\src\Math\MathematicalOperationsManager.cpp" />
+    <ClCompile Include="..\..\src\Math\MathematicalOperationsSTL.cpp" />
     <ClCompile Include="..\..\src\MatrixOperations\MatrixOperations.cpp" />
     <ClCompile Include="..\..\src\Matrix\Matrix.cpp" />
     <ClCompile Include="..\..\src\util\util.cpp" />
@@ -141,6 +143,7 @@
     <ClInclude Include="..\..\include\Exception.h" />
     <ClInclude Include="..\..\include\io.h" />
     <ClInclude Include="..\..\include\MathematicalOperations.h" />
+    <ClInclude Include="..\..\include\MathematicalOperationsSTL.h" />
     <ClInclude Include="..\..\include\Matrix.h" />
     <ClInclude Include="..\..\include\MatrixOperations.h" />
     <ClInclude Include="..\..\include\util.h" />

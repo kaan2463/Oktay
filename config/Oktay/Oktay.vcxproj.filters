@@ -48,6 +48,12 @@
     <ClCompile Include="..\..\src\util\util.cpp">
       <Filter>Source Files\src\util</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Math\MathematicalOperationsSTL.cpp">
+      <Filter>Source Files\src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Math\MathematicalOperationsManager.cpp">
+      <Filter>Source Files\src\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Matrix.h">
@@ -66,6 +72,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\MathematicalOperationsSTL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

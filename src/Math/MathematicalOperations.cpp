@@ -1,11 +1,36 @@
 #include <Exception.h>
 #include <MathematicalOperations.h>
 
+#define MAX_ITER                150
+#define DE                      1.0e-8
+
+#define POW_PRECISION           8
+
+#define TRIGONOMETRIC_DEPTH     19
+#define LOGARITMIC_DEPTH        10000
+
+#define OKTAY_PI                3.14159265358979323846
+#define OKTAY_E                 2.71828182845904523536
+
+#ifndef _HUGE_ENUF
+#define _HUGE_ENUF  1e+300  // _HUGE_ENUF*_HUGE_ENUF must overflow
+#endif
+
+#define INFINITY   ((float)(_HUGE_ENUF * _HUGE_ENUF))
+#define HUGE_VAL   ((double)INFINITY)
+#define HUGE_VALF  ((float)INFINITY)
+#define HUGE_VALL  ((long double)INFINITY)
+#ifndef _UCRT_NEGATIVE_NAN
+// This operation creates a negative NAN adding a - to make it positive
+#define OKTAY_NAN        (-(float)(INFINITY * 0.0F))
+#endif
+
 typedef unsigned long long uint64_t;
+
 
 MathematicalOperations* MathematicalOperations::INSTANCE = 0;
 
-MathematicalOperations* MathematicalOperations::getInstance()
+MathematicalOperations* MathematicalOperations::getInstanceBase()
 {
     if(INSTANCE == 0)
     {
