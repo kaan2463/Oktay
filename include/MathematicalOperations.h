@@ -2,50 +2,33 @@
 #ifndef OKTAY_MATHEMATICAL_OPERATIONS
 #define OKTAY_MATHEMATICAL_OPERATIONS
 
-#define MAX_ITER                150
-#define DE                      1.0e-8
-
-#define POW_PRECISION           8
-
-#define TRIGONOMETRIC_DEPTH     19
-#define LOGARITMIC_DEPTH        10000
-
-#define OKTAY_PI                3.14159265358979323846
-#define OKTAY_E                 2.71828182845904523536
-
-#ifndef _HUGE_ENUF
-#define _HUGE_ENUF  1e+300  // _HUGE_ENUF*_HUGE_ENUF must overflow
-#endif
-
-#define INFINITY   ((float)(_HUGE_ENUF * _HUGE_ENUF))
-#define HUGE_VAL   ((double)INFINITY)
-#define HUGE_VALF  ((float)INFINITY)
-#define HUGE_VALL  ((long double)INFINITY)
-#ifndef _UCRT_NEGATIVE_NAN
-// This operation creates a negative NAN adding a - to make it positive
-#define OKTAY_NAN        (-(float)(INFINITY * 0.0F))
-#endif
-
-typedef unsigned long long uint64_t;
+#define DEFAULT_TYPE STD
 
 typedef double (*DFUNC1D)(double);
 typedef double (*DFUNC2D)(double, double);
+
+enum MathImplementaionType
+{
+    BASE, STD
+};
 
 
 class MathematicalOperations
 {
 private:
     static MathematicalOperations* INSTANCE;
+protected:
     MathematicalOperations() {}
 public:
-    static MathematicalOperations* getInstance();
+    static MathematicalOperations* getInstance(MathImplementaionType type = DEFAULT_TYPE);
+    static MathematicalOperations* getInstanceBase();
     ~MathematicalOperations() {}
 
     /*
     * Absolute value
     * return |x|
     */
-    double abs(double x);
+    virtual double abs(double x);
 
     /*
     * Newton Raphson method
@@ -64,7 +47,7 @@ public:
     * Square Root by using Newton Raphson method
     * return sqrt(x)
     */
-    double sqrt(double x);
+    virtual double sqrt(double x);
 
     /*
     * Numerical Derivative of y = f(x)
@@ -75,14 +58,14 @@ public:
     * Power 10
     * return x^10
     */
-    double pow10(double x);
+    virtual double pow10(double x);
 
     /*
     * Power of inverse 10
     * by Newton Raphson Algorithm
     * return x^(1/10)
     */
-    double powInv10(double x);
+    virtual double powInv10(double x);
 
 
     /*
@@ -90,14 +73,14 @@ public:
     * n : double
     * return x^n
     */
-    double pow(double x, double n);
+    virtual double pow(double x, double n);
 
     /*
     * Exponential function
     * n : double
     * return e^x
     */
-    double exp(double x);
+    virtual double exp(double x);
 
     /*
     * Sinus Function in radyan
@@ -105,7 +88,7 @@ public:
     * sin(x)=sum _{n=0}^{infty}{frac{(-1)^{n}}{(2n+1)!}}x^{2n+1}
     * All x
     */
-    double sin(double x);
+    virtual double sin(double x);
 
     /*
     * Cosinus Function in radyan
@@ -113,7 +96,7 @@ public:
     * cos(x)=sum _{n=0}^{infty }{frac {(-1)^{n}}{(2n)!}}x^{2n}
     * All x
     */
-    double cos(double x);
+    virtual double cos(double x);
 
     /*
     * Tangent Function in radyan
@@ -121,7 +104,7 @@ public:
     * tan(x)=sum _{n=1}^{infty }{frac {B_{2n}(-4)^{n}(1-4^{n})}{(2n)!}}x^{2n-1}
     * abs(x) <= PI / 2
     */
-    double tan(double x);
+    virtual double tan(double x);
 
     /*
     * Arcsin Function in radyan
@@ -129,12 +112,12 @@ public:
     * arcsin(x)=sum _{n=0}^{infty }{frac {(2n)!}{4^{n}(n!)^{2}(2n+1)}}x^{2n+1}
     * abs(x) <= 1
     */
-    double arcsin(double x);
+    virtual double arcsin(double x);
 
     /*
     * (PI / 2) - arcsin(x)
     */
-    double arccos(double x);
+    virtual double arccos(double x);
 
     /*
     * arcangent Function in radyan
@@ -142,33 +125,33 @@ public:
     * arctan(x)=sum _{n=0}^{infty }{frac {(-1)^{n}}{2n+1}}x^{2n+1}
     * abs(x) <= 1
     */
-    double arctan(double x);
+    virtual double arctan(double x);
 
     /*
     * Natural Algorithm byusing Taylor Series
     * ln(x) = sum _{n=1}^{infty }{frac {(-1)^{n+1}{z-1}^n}{n}}
     * 0 < x <= 2   >>> x = (0,inf]
     */
-    double ln(double x);
+    virtual double ln(double x);
 
     /*
     * Logarithm
     * c = log_{base}(x)
     * log_{base}(x) = ln(x) / ln(base)
     */
-    double log(double base, double x);
+    virtual double log(double base, double x);
 
     /*
     * Logarithm on base2
     * log2(x) = ln(x) / ln(2)
     */
-    double log2(double x);
+    virtual double log2(double x);
 
     /*
     * Logarithm on base10
     * log10(x) = ln(x) / ln(10)
     */
-    double log10(double x);
+    virtual double log10(double x);
 
 };
 
